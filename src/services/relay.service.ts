@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import { legacyPinMapping } from 'src/constants';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Gpio = require('onoff').Gpio;
 
@@ -8,9 +9,16 @@ export class RelayService {
   private channels: any[];
 
   constructor() {
-
+    const legacyMode = process.env.LEGACY_MODE === 'true';
     const totalChannels = parseInt(process.env.CHANNELS_TOTAL || '0', 10);
     const channelPins = JSON.parse(process.env.CHANNELS_PINS || '[]');
+
+    if (legacyMode) {
+      console.log('Legacy mode enabled');
+      for(let pin of channelPins) {
+        pin = legacyPinMapping[pin] || pin;
+      }
+    }
 
     this.channels = [];
     for (let i = 0; i < totalChannels; i++) {
