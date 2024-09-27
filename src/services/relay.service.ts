@@ -1,28 +1,23 @@
-import * as dotenv from 'dotenv';
-import { legacyPinMapping } from 'src/constants';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const Gpio = require('onoff').Gpio;
+import { exec } from 'child_process';
 
+import * as dotenv from 'dotenv';
 dotenv.config();
+
+/*
+We decided to use exec instead of the onoff library due to /sys/class/gpio being deprecated, which is the API that onoff still uses. Other libraries also suffer from this issue.
+Pull requests to fix this issue are most welcome.
+*/
 
 export class RelayService {
   private channels: any[];
 
   constructor() {
-    const legacyMode = process.env.LEGACY_MODE === 'true';
     const totalChannels = parseInt(process.env.CHANNELS_TOTAL || '0', 10);
     const channelPins = JSON.parse(process.env.CHANNELS_PINS || '[]');
 
-    if (legacyMode) {
-      console.log('Legacy mode enabled');
-      for(let pin of channelPins) {
-        pin = legacyPinMapping[pin] || pin;
-      }
-    }
-
     this.channels = [];
-    for (let i = 0; i < totalChannels; i++) {
-      this.channels.push({ id: i + 1, status: false, gpio: new Gpio(channelPins[i], 'out') });
+    for (let i = 0; i <= totalChannels; i++) {
+      this.channels.push({ id: i, status: false, gpioChannel: channelPins[i]});
     }
     console.log(`RelayService initialized with ${totalChannels} channels`);
   }
@@ -31,7 +26,8 @@ export class RelayService {
     try {
       const relay = this.channels.find((r) => r.id === relayId);
       if (relay) {
-      relay.gpio.writeSync(1);
+      exec(`pinctrl set ${relay.gpioChannel} op dh`);
+      relay.status = true;
       console.log(`Relay ${relayId} enabled`);
       return true;
     } else {
@@ -48,7 +44,8 @@ export class RelayService {
     try {
       const relay = this.channels.find((r) => r.id === relayId);
       if (relay) {
-      relay.gpio.writeSync(0);
+      exec(`pinctrl set ${relay.gpioChannel} op dl`);
+      relay.status = false;
       console.log(`Relay ${relayId} disabled`);
       return true;
     } else {
@@ -65,7 +62,7 @@ export class RelayService {
     try {
       const relay = this.channels.find((r) => r.id === relayId);
       if (relay) {
-      const status = relay.gpio.readSync() === 1;
+      const status = exec(`pinctrl get ${relay.gpioChannel}`);
       console.log(`Relay ${relayId} status: ${status}`);
       return status;
     } else {

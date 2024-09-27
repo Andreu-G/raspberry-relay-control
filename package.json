@@ -24,7 +24,6 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "dotenv": "^16.4.5",
-    "onoff": "^6.0.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

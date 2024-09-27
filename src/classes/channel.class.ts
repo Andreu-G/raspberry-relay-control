@@ -2,11 +2,11 @@
 export class Channel {
    id: number;
    status: boolean;
-   gpio: any;
+   gpioChannel: any;
 
-  constructor(id: number, status: boolean = false, gpio: any) {
+  constructor(id: number, status: boolean = false, gpioChannel: any) {
     this.id = id;
     this.status = status;
-    this.gpio = gpio;
+    this.gpioChannel = gpioChannel;
   }
 }
