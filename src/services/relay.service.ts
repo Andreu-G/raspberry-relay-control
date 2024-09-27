@@ -1,23 +1,22 @@
 import * as dotenv from 'dotenv';
-import { Channel } from 'src/classes/channel.class';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const Gpio = require('onoff').Gpio;
 
 dotenv.config();
 
 export class RelayService {
-  private channels: Channel[];
+  private channels: any[];
 
   constructor() {
 
-    const totalRelays = parseInt(process.env.CHANNELS_TOTAL || '0', 10);
-    const relayPins = JSON.parse(process.env.CHANNELS_PINS || '[]');
+    const totalChannels = parseInt(process.env.CHANNELS_TOTAL || '0', 10);
+    const channelPins = JSON.parse(process.env.CHANNELS_PINS || '[]');
 
     this.channels = [];
-    for (let i = 0; i < totalRelays; i++) {
-      this.channels.push({ id: i + 1, status: false, gpio: new Gpio(relayPins[i], 'out') });
+    for (let i = 0; i < totalChannels; i++) {
+      this.channels.push({ id: i + 1, status: false, gpio: new Gpio(channelPins[i], 'out') });
     }
-    console.log(`RelayService initialized with ${totalRelays} relays`);
+    console.log(`RelayService initialized with ${totalChannels} channels`);
   }
 
   enable(relayId: number): boolean {
