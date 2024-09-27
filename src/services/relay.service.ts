@@ -73,4 +73,7 @@ export class RelayService {
       return false;
     }
   }
+  getStatusAll() {
+    return this.channels;
+  }
 }
