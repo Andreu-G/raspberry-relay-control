@@ -16,61 +16,60 @@ export class RelayService {
     const channelPins = JSON.parse(process.env.CHANNELS_PINS || '[]');
 
     this.channels = [];
-    for (let i = 0; i <= totalChannels; i++) {
+    for (let i = 1; i <= totalChannels; i++) {
       this.channels.push({ id: i, status: false, gpioChannel: channelPins[i]});
     }
     console.log(`RelayService initialized with ${totalChannels} channels`);
   }
 
-  enable(relayId: number): boolean {
+  enable(channelId: number): boolean {
     try {
-      const relay = this.channels.find((r) => r.id === relayId);
+      const relay = this.channels.find((c) => c.id == channelId);
       if (relay) {
       exec(`pinctrl set ${relay.gpioChannel} op dh`);
       relay.status = true;
-      console.log(`Relay ${relayId} enabled`);
+      console.log(`Channel ${channelId} enabled`);
       return true;
     } else {
-        console.error(`Relay ${relayId} not found`);
+        console.error(`Channel ${channelId} not found`);
         return false;
       }
     } catch (error) {
-      console.error(`Error enabling relay ${relayId}: ${error}`);
+      console.error(`Error enabling channel ${channelId}: ${error}`);
       return false;
     }
   }
 
-  disable(relayId: number) {
+  disable(channelId: number) {
     try {
-      const relay = this.channels.find((r) => r.id === relayId);
+      const relay = this.channels.find((c) => c.id == channelId);
       if (relay) {
       exec(`pinctrl set ${relay.gpioChannel} op dl`);
       relay.status = false;
-      console.log(`Relay ${relayId} disabled`);
+      console.log(`Channel ${channelId} disabled`);
       return true;
     } else {
-        console.error(`Relay ${relayId} not found`);
+        console.error(`Channel ${channelId} not found`);
         return false;
       }
     } catch (error) {
-      console.error(`Error disabling relay ${relayId}: ${error}`);
+      console.error(`Error disabling channel ${channelId}: ${error}`);
       return false;
     }
   }
 
-  getStatus(relayId: number) {
+  getStatus(channelId: number) {
     try {
-      const relay = this.channels.find((r) => r.id === relayId);
+      const relay = this.channels.find((c) => c.id == channelId);
       if (relay) {
       const status = exec(`pinctrl get ${relay.gpioChannel}`);
-      console.log(`Relay ${relayId} status: ${status}`);
+      console.log(`Channel ${channelId} status: ${status}`);
       return status;
-    } else {
-      console.error(`Relay ${relayId} not found`);
-      return false;
-    }
+    } else 
+      console.error(`Channel ${channelId} not found`);
+        return false;
     } catch (error) {
-      console.error(`Error getting status of relay ${relayId}: ${error}`);
+      console.error(`Error getting status of channel ${channelId}: ${error}`);
       return false;
     }
   }
