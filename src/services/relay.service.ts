@@ -11,7 +11,7 @@ export class RelayService {
 
   constructor() {
     const totalChannels = process.env.CHANNELS_TOTAL;
-    const channelPins = process.env.CHANNELS_PINS;
+    const channelPins = process.env.CHANNELS_PINS.split(',');
 
     this.channels = [];
     for (let i = 0; i < parseInt(totalChannels); i++) {
