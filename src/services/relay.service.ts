@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
-import { CHANNELS_PINS, CHANNELS_TOTAL } from '../constants';
+import * as dotenv from 'dotenv';
+dotenv.config();
 /*
 We decided to use exec instead of the onoff library due to /sys/class/gpio being deprecated, which is the API that onoff still uses. Other libraries also suffer from this issue.
 Pull requests to fix this issue are most welcome.
@@ -9,11 +10,11 @@ export class RelayService {
   private channels: any[];
 
   constructor() {
-    const totalChannels = CHANNELS_TOTAL;
-    const channelPins = CHANNELS_PINS;
+    const totalChannels = process.env.CHANNELS_TOTAL;
+    const channelPins = process.env.CHANNELS_PINS;
 
     this.channels = [];
-    for (let i = 0; i < totalChannels; i++) {
+    for (let i = 0; i < parseInt(totalChannels); i++) {
       this.channels.push({
         id: i + 1,
         status: false,
