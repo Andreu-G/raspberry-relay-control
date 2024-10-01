@@ -21,7 +21,9 @@ export class RelayService {
         gpioChannel: channelPins[i],
       });
     }
-    console.log(`RelayService initialized with ${totalChannels} channels`);
+    console.log(
+      `RelayService initialized with ${this.channels.length} channels`,
+    );
   }
 
   enable(channelId: number): boolean {
