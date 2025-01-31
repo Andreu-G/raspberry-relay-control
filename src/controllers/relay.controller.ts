@@ -10,9 +10,7 @@ export class RelayController {
   enable(@Param('id') id: number) {
     console.log(`Enabling channel ${id}`);
     const status = this.relayService.enable(id);
-    return status
-      ? { message: `Channel ${id} enabled` }
-      : { message: `Channel ${id} not found` };
+    return status;
   }
 
   @Post('disable/:id')
@@ -20,9 +18,7 @@ export class RelayController {
   disable(@Param('id') id: number) {
     console.log(`Disabling channel ${id}`);
     const status = this.relayService.disable(id);
-    return status
-      ? { message: `Channel ${id} disabled` }
-      : { message: `Channel ${id} not found` };
+    return status;
   }
 
   @Get('status/:id')
@@ -30,9 +26,7 @@ export class RelayController {
   getStatus(@Param('id') id: number) {
     console.log(`Getting status of channel ${id}`);
     const status = this.relayService.getStatus(id);
-    return status
-      ? { message: `Channel ${id} is ${status}` }
-      : { message: `Channel ${id} not found` };
+    return status;
   }
 
   @Get('status-all')
